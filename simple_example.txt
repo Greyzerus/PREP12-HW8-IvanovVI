@@ -1,0 +1,7 @@
+Some string
+Some string
+Nonrepeating string
+Non-repeating string
+add_string
+And EOF closed one:
+add_string
