@@ -1,40 +1,32 @@
-#include <fstream>
-#include <iostream>
-#include <algorithm>
-#include <unordered_set>
+#include "lexical_word_entries.hpp"
+
+
+/* Написать программу принимающую
+ * заданносе слово и имена документов
+ * как аргументы командной строки.
+ *
+ * Посчитать среднее количество вхождений
+ * этого слова в документы.
+ * Слова разделяются символами такими, что
+ * isspace() || ispunct() == true */
+
 
 int main(int argc, char* argv[]) {
-    std::string filename;
-    if (argc==1) {
-        std::cout << "Put filename as program argue: "<<std::endl;
-        std::cin >> filename;
-    }
-    else filename = argv[1];
-    std::ifstream infile;
-    try {
-        infile.open (filename);
-    } catch (std::exception &ex) {
-        std::cerr << "Can't open file: " << ex.what() << std::endl;
+    if (argc <= 2) {
+        std::cout << "Enter word for searching and filenames as argues." << std::endl;
         return -1;
     }
-    std::unordered_set <std::string> hash, repeating_strings;
-    while (infile) {
-        std::string buf;
-        getline(infile, buf);
-        auto result = hash.emplace(buf); //std::pair <iter, bool>
-                                        //bool's true means successful insertion
-        if (!result.second) {
-            repeating_strings.emplace(buf);
+    lexical_word_entries entries (argv[1]);
+    for (int i=2; i<argc; i++) {
+        try {
+            entries.process(argv[i]);
+        } catch (std::runtime_error &ex) {
+            std::cerr << "Error with file " << argv[i]
+                      << " : " << ex.what() << std::endl;
+            continue;
         }
     }
-    if (repeating_strings.empty()) {
-        std::cout << "There is no repeating strings on file."<<std::endl;
-    }
-    else {
-        std::cout << "Repeating strings: " <<std::endl;
-        for (auto i : repeating_strings) {
-            std::cout << i << std::endl; //hashed value
-        }
-    }
+    std::cout << "Entries mean in " << entries.get_entries_count()
+              << " files is: " << entries.get_entries_mean() << std::endl;
     return 0;
 }
