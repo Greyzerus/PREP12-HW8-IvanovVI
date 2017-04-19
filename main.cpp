@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 int main(int argc, char* argv[]) {
+    /*opening file*/
     std::string filename;
     if (argc==1) {
         std::cout << "Put filename as program argue: "<<std::endl;
@@ -17,6 +18,7 @@ int main(int argc, char* argv[]) {
         std::cerr << "Can't open file: " << ex.what() << std::endl;
         return -1;
     }
+    /*logic*/
     std::unordered_set <std::string> hash, repeating_strings;
     while (infile) {
         std::string buf;
